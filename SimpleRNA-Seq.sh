@@ -13,7 +13,7 @@
 
 
 READ1="RNA-Seq-Project.R1.fq.gz"
-READ2="RNA-Seq-Project.R1.fq.gz"
+READ2="RNA-Seq-Project.R2.fq.gz"
 
 GTF="reference_genome.gtf"
 INDEX="reference_genome.hisat2.idx"
