@@ -61,22 +61,22 @@ sub default_options {
 
        ## general parameters
        'pipeline_name' => $self->o('hive_dbname'),       
-       'email'         => $self->o('ENV', 'USER').'@ebi.ac.uk',
+       'email'         => '',
        'data_dir'      => '',
        'output_dir'    => '', 
        ## flag settings
        'flag_pe'       => '0', # default=> 0 or 1 whether data are single or paired-end 
        ## data libraries
-       'gtf'           => '/nfs/nobackup/otar/data/reference/Homo_sapiens.GRCh38.87.gtf',
-       'reference'     => '/nfs/nobackup/otar/data/reference/hg19_hisat',
+       'gtf'           => '',
+       'reference'     => '',
        ## executables
-       'fastqc'        => '/homes/ckong/work/lib/FastQC/fastqc',
-       'trim_galore'   => '/homes/ckong/work/lib/trim_galore',
-       'hisat2'        => '/homes/ckong/work/lib/hisat-0.1.6-beta/hisat',
-       'samtools'      => '/usr/bin/samtools',
-       'htseq_count'   => '/homes/ckong/.local/bin/htseq-count',
-       'qualimap'      => '/homes/ckong/work/lib/qualimap_v2.2.1/qualimap',
-       'multiqc'       => '/homes/ckong/.local/bin/multiqc',		
+       'fastqc'        => '',
+       'trim_galore'   => '',
+       'hisat2'        => '',
+       'samtools'      => '',
+       'htseq_count'   => '',
+       'qualimap'      => '',
+       'multiqc'       => '',		
 
        ## eHive database details
        'pipeline_db' => {  
@@ -134,13 +134,13 @@ sub resource_classes {
     my $self = shift;
 
     return {
-      'default' => {'LSF' => '-q production-rh7 -n 4 -M 4000   -R "rusage[mem=4000]"'},
-      '8GB'  	=> {'LSF' => '-q production-rh7 -n 4 -M 8000   -R "rusage[mem=8000]"'},
-      '16GB'  	=> {'LSF' => '-q production-rh7 -n 4 -M 16000  -R "rusage[mem=16000]"'},
-      '32GB'  	=> {'LSF' => '-q production-rh7 -n 4 -M 32000  -R "rusage[mem=32000]"'},
-      '64GB'  	=> {'LSF' => '-q production-rh7 -n 4 -M 64000  -R "rusage[mem=64000]"'},
-      '128GB'  	=> {'LSF' => '-q production-rh7 -n 4 -M 128000 -R "rusage[mem=128000]"'},
-      '256GB'  	=> {'LSF' => '-q production-rh7 -n 4 -M 256000 -R "rusage[mem=256000]"'},
+      'default' => {'LSF' => '-q production -n 4 -M 4000   -R "rusage[mem=4000]"'},
+      '8GB'  	=> {'LSF' => '-q production -n 4 -M 8000   -R "rusage[mem=8000]"'},
+      '16GB'  	=> {'LSF' => '-q production -n 4 -M 16000  -R "rusage[mem=16000]"'},
+      '32GB'  	=> {'LSF' => '-q production -n 4 -M 32000  -R "rusage[mem=32000]"'},
+      '64GB'  	=> {'LSF' => '-q production -n 4 -M 64000  -R "rusage[mem=64000]"'},
+      '128GB'  	=> {'LSF' => '-q production -n 4 -M 128000 -R "rusage[mem=128000]"'},
+      '256GB'  	=> {'LSF' => '-q production -n 4 -M 256000 -R "rusage[mem=256000]"'},
     }
 }
 
