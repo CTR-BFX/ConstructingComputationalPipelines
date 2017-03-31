@@ -21,4 +21,7 @@ The 5 basic steps are:
 ## Clusterflow Example of Simple RNA-Seq
 
 
+## eHive Example of Simple RNA-Seq
 
+* Pipeline configuration file
+   ehiveRNAseq/RNAseq_conf.pm
