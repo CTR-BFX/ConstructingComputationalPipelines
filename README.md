@@ -35,7 +35,7 @@ MultiQC        | Aggregates results from analyses performed      | http://multiq
 
 
 
-## Bash Script Examples of Simple RNA-Seq
+## Bash Script Example of Simple RNA-Seq
 In this very simple bash shell script the read files and reference genome should be edited manually at the top of the file:
 
 Change the filenames to match the names of the samples to be run
@@ -60,11 +60,14 @@ Run the script from the command line
 
 ## Clusterflow Example of Simple RNA-Seq
 
-Download and install clusterflow from the link in the table above. Clusterflow modules from each of the pipeline steps are already included in Clusterflow, with the exception of `qualimap_rnaseq`. This file (`qualimap_rnaseq.cfmod`) is provided in the Clusterflow directory and should be copied to the Clusterflow module directory. The simple RNA-Seq pipeline is provided as a file (`SimpleRNA-Seq.config`) and should be copied to the clusterflow pipeline directory
+Download and install clusterflow from the link in the table above. Clusterflow modules from each of the pipeline steps are already included in Clusterflow, with the exception of `qualimap_rnaseq`. This file (`qualimap_rnaseq.cfmod`) is provided in the Clusterflow directory and should be copied to the Clusterflow installation module directory. The simple RNA-Seq pipeline is provided as a file (`SimpleRNA-Seq.config`) and should be copied to the clusterflow installation pipeline directory
 
 Once installed Clusterflow can be run on a set of sample with the following command. Replace the genome reference as appropriate (note these should be specified as part of the Clusterflow install).
 
-    $ cf --genome <YOURGENOME REF> SimpleRNA-Seq \*.fq.gz
+````
+$ cf --genome <YOURGENOME REF> SimpleRNA-Seq *.fq.gz
+````
+
 
 Results will be written into the directory the `cf` command was run from
 
