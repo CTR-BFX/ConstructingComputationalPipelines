@@ -1,0 +1,105 @@
+#!/usr/bin/env perl
+use warnings;
+use strict;
+use Getopt::Long;
+use FindBin qw($Bin);
+use lib "$FindBin::Bin/../source";
+use CF::Constants;
+use CF::Helpers;
+
+##########################################################################
+# Copyright 2014, Philip Ewels (phil.ewels@babraham.ac.uk)               #
+# Copyright 2016, Russell S. Hamilton (rsh46@cam.ac.uk)                  #
+#                                                                        #
+# This file is part of Cluster Flow.                                     #
+#                                                                        #
+# Cluster Flow is free software: you can redistribute it and/or modify   #
+# it under the terms of the GNU General Public License as published by   #
+# the Free Software Foundation, either version 3 of the License, or      #
+# (at your option) any later version.                                    #
+#                                                                        #
+# Cluster Flow is distributed in the hope that it will be useful,        #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of         #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          #
+# GNU General Public License for more details.                           #
+#                                                                        #
+# You should have received a copy of the GNU General Public License      #
+# along with Cluster Flow.  If not, see <http://www.gnu.org/licenses/>.  #
+##########################################################################
+
+# We need to set the headless option in the environment otherwise qualimap
+# will barf and die.
+#$ENV{JAVA_OPTS} = "-Djava.awt.headless=true";
+
+
+# Module requirements
+my %requirements = (
+	'cores' 	=> '1',
+	'memory' 	=> '15G',
+	'modules' 	=> 'qualimap',
+	'time' 		=> sub {
+		my $cf = $_[0];
+		my $num_files = $cf->{'num_starting_merged_aligned_files'};
+		$num_files = ($num_files > 0) ? $num_files : 1;
+		# Sorting typically takes less than 1 hour per BAM file
+		return CF::Helpers::minutes_to_timestamp ($num_files * 60 * 6);
+	}
+);
+
+# Help text
+my $helptext = "".("-"x30)."\n Qualimap QC\n".("-"x30)."\n
+Runs the qualimap rnaseq program\n\n";
+
+# Setup
+my %cf = CF::Helpers::module_start(\%requirements, $helptext);
+
+# MODULE
+my $mem = CF::Helpers::human_readable_to_bytes($cf{'memory'});
+my $mem_per_thread = CF::Helpers::bytes_to_human_readable(int($mem / $cf{'cores'}));
+warn "\n\nQualimap memory per thread: $mem_per_thread. Cores: $cf{cores}\n\n\n";
+
+open (RUN,'>>',$cf{'run_fn'}) or die "###CF Error: Can't write to $cf{run_fn}: $!";
+
+# Print version information about the module.
+warn "---------- Qualimap version information ----------\n";
+warn `qualimap 2>&1 | head -n 5`;
+warn "------- End of Qualimap version information ------\n";
+
+
+if( scalar(@{$cf{'prev_job_files'}}) > 0)
+  {
+    foreach my $file (@{$cf{'prev_job_files'}})
+       {
+         # Add paired end flags if the bam file is PE
+         my($is_bam_pe) = CF::Helpers::is_bam_paired_end($file);
+         my $paired_flag = "";
+         if($is_bam_pe){ $paired_flag = " --paired --sorted "; }
+
+         my $timestart = time;
+         my $file_base = $file;
+         $file_base =~ s/\.bam$//i;
+
+         my $output_dir  = $file_base . "_qualimap-rnaseq";
+         my $output_file = $file_base . "_qualimap-rnaseq.html";
+	
+         # Prevent all non-used GFT entries being printed to stderr 
+         # http://stackoverflow.com/questions/3618078/pipe-only-stderr-through-a-filter	
+         my $command = "qualimap rnaseq $paired_flag -bam $file -gtf $cf{refs}{gtf} -outdir $output_dir -outfile $output_file -outformat HTML 3>&1 1>&2 2>&3 3>&- | grep -v 'gene_source' | grep -v 'Line with wrong attributes'";
+
+         warn "\n###CFCMD $command\n\n";
+
+         if(!system ($command)) 
+           {
+             # Qualimap worked - print out resulting filenames
+             my $duration =  CF::Helpers::parse_seconds(time - $timestart);
+             warn "\n###CF Qualimap successfully exited, took $duration..\n";
+             print RUN "$cf{'job_id'}\t$output_file\n"; 
+           } 
+         else 
+           {
+             die "\n###CF Error! Qualimap exited with an error state for file '$file': $? $!\n\n";
+           }			
+      } 
+  }
+
+close (RUN);
