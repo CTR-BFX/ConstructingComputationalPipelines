@@ -74,6 +74,27 @@ Results will be written into the directory the `cf` command was run from
 
 ## eHive Example of Simple RNA-Seq
 
-* Pipeline configuration file
+Pre-requisite: A Mysql instance
 
-   ehiveRNAseq/RNAseq_conf.pm
+Clone eHive module from github repository in the table above. Setup $PERL5LIB pointing to the ehive cloned repository, next setup eHive Mysql database parameters $HIVE_HOST, $HIVE_PORT, $HIVE_USER, $HIVE_PASS, $hive_dbname.
+
+* Run the pipeline initialisation step using the configuration file:
+
+````
+init_pipeline.pl ehiveRNAseq::RNAseq_conf \
+  -hive_host ${HIVE_HOST}   \
+  -hive_port ${HIVE_PORT}   \
+  -hive_user ${HIVE_USER}   \
+  -hive_password ${HIVE_PASS} \
+  -hive_dbname ${hive_dbname} \
+  -data_dir [where your raw data resides] \
+  -output_dir [where the output will be] \
+  -hive_force_init 1 \
+  -flag_pe 1   
+````
+
+* After successfully initialised the eHive database for the pipeline, execute the beekeeper script to start creating worker to run jobs.
+````
+beekeeper.pl -url mysql://[mysql_username]:[mysql_password]@[mysql_hostname]:[mysql_port]/[hive_dbname] -sync
+beekeeper.pl -url mysql://[mysql_username]:[mysql_password]@[mysql_hostname]:[mysql_port]/[hive_dbname] -loop
+````
