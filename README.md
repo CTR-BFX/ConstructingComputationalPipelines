@@ -22,7 +22,7 @@ ClusterFlow    | http://clusterflow.io
 eHive          | https://github.com/Ensembl/ensembl-hive
 
 
-The software packages for the basic workflow steps are in the table below and are require to be installed prior to running the pipeline tools.
+The software packages for the basic workflow steps are in the table below and are required to be installed prior to running the pipeline tools.
 
 Resource       | Brief Description | URL
 -------------- | ----------------- | ---
