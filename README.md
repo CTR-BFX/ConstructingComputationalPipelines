@@ -11,6 +11,9 @@
 
 *Open Targets, European Bioinformatics Institute (EMBL-EBI), Wellcome Trust Genome Campus, Cambridge, CB10 1SD, UK*
 
+## Publication
+
+Ong, C-K & Hamilton, R.S. (2018) Constructing Computational Pipelines Encyclopedia of Bioinformatics and Computational Biology, 3, 135-143 [[DOI](https://doi.org/10.1016/B978-0-12-809633-8.20090-3)]
 
 ## Worked Example Code and Documentation
 
